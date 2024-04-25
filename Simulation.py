@@ -52,11 +52,12 @@ class MyGame(arcade.Window):
         self.square_list = arcade.SpriteList()  # Initialize square list
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=0.4)
+        self.player_sprite = arcade.Sprite("Main_Character.png",
+                                           scale=0.6)
         self.player_sprite.center_x = 256
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
+        arcade.set_background_color(arcade.color.GRAY)
 
         # Set up walls
         for x in range(200, 1650, 210):
@@ -75,7 +76,7 @@ class MyGame(arcade.Window):
 
         # Spawn the square outside the walls
         while True:
-            self.char = arcade.Sprite(":resources:images/items/coinGold.png", scale=0.5)
+            self.char = arcade.Sprite("Almost_deadperson_real.png", scale=0.5)
             self.char.center_x = random.uniform(self.min_x, self.max_x)
             self.char.center_y = random.uniform(self.min_y, self.max_y)
             if not arcade.check_for_collision_with_list(self.char, self.wall_list):
@@ -84,7 +85,7 @@ class MyGame(arcade.Window):
         self.square_list.append(self.char)
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
-        arcade.set_background_color(arcade.color.AMAZON)
+
     def on_draw(self):
         """ Render the screen. """
         self.clear()

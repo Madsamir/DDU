@@ -1,5 +1,6 @@
 import arcade
 import time
+import PyQt5
 import subprocess
 
 SCREEN_WIDTH = 800
@@ -15,10 +16,13 @@ class MyWindow(arcade.Window):
         self.total_time = 15
         self.tid_gaaet = self.total_time
         self.printed_result = False
+        self.press_sound = None
+
 
     def setup(self):
         arcade.set_background_color(arcade.color.ALMOND)
         self.torso = arcade.load_texture("CHEST.png")
+        self.press_sound = arcade.load_sound("mixkit-arcade-game-jump-coin-216.wav")
 
     def on_draw(self):
         arcade.start_render()
@@ -46,6 +50,7 @@ class MyWindow(arcade.Window):
 
         if self.tid_gaaet > 0 and x > 325 and x < 465 and y > 225 and y < 300:
             self.clicks += 1
+            arcade.play_sound(self.press_sound)
             print(self.clicks)
 
 def main():
