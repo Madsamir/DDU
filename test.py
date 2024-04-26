@@ -1,15 +1,6 @@
-"""
-Work with a mini-map
-
-Artwork from https://kenney.nl
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.minimap
-"""
-
 import random
 from uuid import uuid4
-
+import subprocess
 import arcade
 from pyglet.math import Vec2
 
@@ -225,6 +216,14 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
+        for character in self.square_list:
+            if arcade.check_for_collision(self.player_sprite, character):
+                print("Touched")
+                character.remove_from_sprite_lists()
+                # Run another script
+                subprocess.run(["python", "CPR_test.py"])
+                # Replace "another_script.py" with the name of your script
+                # and make sure it's in the same directory as your main script.
         self.physics_engine.update()
 
         # Scroll the screen to the player
