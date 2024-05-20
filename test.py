@@ -36,19 +36,17 @@ MAP_HEIGHT = 2048
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
 
     def __init__(self, width, height, title):
-        """
-        Initializer
-        """
         super().__init__(width, height, title, resizable=True)
 
         # Sprite lists
         self.player_list = None
         self.wall_list = None
         self.square_list = None
-
+        self.green_tegn_list = None
+        self.hjertestater = False
+        self.points = 0
         # Mini-map related
 
         # List of all our minimaps (there's just one)
@@ -64,6 +62,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.player_sprite = None
+        self.green_tegn_sprite = None
 
         self.physics_engine = None
 
@@ -78,10 +77,16 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.square_list = arcade.SpriteList()
+        self.green_tegn_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite("Main.png",
                                            scale=0.4)
+        self.green_tegn_sprite = arcade.Sprite("Green_maps.png", scale = 0.2)
+        self.green_tegn_sprite.center_x = 90
+        self.green_tegn_sprite.center_y = 100
+        self.green_tegn_list.append(self.green_tegn_sprite)
+
         self.player_sprite.center_x = 256
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
@@ -91,7 +96,15 @@ class MyGame(arcade.Window):
             for y in range(0, MAP_HEIGHT, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite("tile_0010.png", SPRITE_SCALING + 3)
+                    building = random.randint(1,4)
+                    if building == 1:
+                        wall = arcade.Sprite("tile_0010.png", SPRITE_SCALING + 3)
+                    elif building == 2:
+                        wall = arcade.Sprite("tile_0009.png", SPRITE_SCALING + 3)
+                    elif building == 3:
+                        wall = arcade.Sprite("tile_0008.png", SPRITE_SCALING + 3)
+                    elif building == 4:
+                        wall = arcade.Sprite("tile_0011.png", SPRITE_SCALING + 3)
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -102,7 +115,7 @@ class MyGame(arcade.Window):
 
         # Spawn the square outside the walls
         while True:
-            self.char = arcade.Sprite("Almost_deadperson_real.png", scale=0.5)
+            self.char = arcade.Sprite("Dead_new.png", scale=0.2)
             self.char.center_x = random.uniform(min_x, max_x)
             self.char.center_y = random.uniform(min_y, max_y)
             if not arcade.check_for_collision_with_list(self.char, self.wall_list):
@@ -148,11 +161,14 @@ class MyGame(arcade.Window):
             self.wall_list.draw()
             self.char.scale = 1
             self.square_list.draw()
-            self.char.scale = 0.5
+            self.char.scale = 0.3
 
             self.player_sprite.scale = 0.4  # Set the desired scale
             self.player_sprite.draw()
             self.player_sprite.scale = 0.15
+            self.green_tegn_sprite.scale = 0.5
+            self.green_tegn_list.draw()
+            self.green_tegn_sprite.scale = 0.2
 
 
     def on_draw(self):
@@ -170,6 +186,7 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.player_list.draw()
         self.square_list.draw()
+        self.green_tegn_list.draw()
 
         # Select the (unscrolled) camera for our GUI
         self.camera_gui.use()
@@ -188,7 +205,7 @@ class MyGame(arcade.Window):
 
         # Draw the GUI
         arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
-        text = f"Scroll value: {self.camera_sprites.position[0]:4.1f}, {self.camera_sprites.position[1]:4.1f}"
+        text = f"Du har: {self.points} points"
         arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
     def on_key_press(self, key, modifiers):
@@ -221,18 +238,23 @@ class MyGame(arcade.Window):
                 print("Touched")
                 character.remove_from_sprite_lists()
                 # Run another script
-                subprocess.run(["python", "CPR_test.py"])
+                if self.hjertestater == False:
+                    subprocess.run(["python", "CPR_test.py"])
+                else:
+                    self.hjertestater = False
+                    self.points += 1
                 # Replace "another_script.py" with the name of your script
                 # and make sure it's in the same directory as your main script.
+        for green_tegn in self.green_tegn_list:
+            if arcade.check_for_collision(self.player_sprite, green_tegn):
+                green_tegn.remove_from_sprite_lists()
+                self.hjertestater = True
         self.physics_engine.update()
 
         # Scroll the screen to the player
         self.scroll_to_player()
 
     def scroll_to_player(self):
-        """
-        Scroll the window to the player.
-        """
 
         # Scroll to the proper location
         position = Vec2(self.player_sprite.center_x - self.width / 2,
@@ -240,10 +262,7 @@ class MyGame(arcade.Window):
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):
-        """
-        Resize window
-        Handle the user grabbing the edge and resizing the window.
-        """
+
         self.camera_sprites.resize(int(width), int(height))
         self.camera_gui.resize(int(width), int(height))
 
