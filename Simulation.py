@@ -8,7 +8,7 @@ SPRITE_SCALING = 0.5
 
 DEFAULT_SCREEN_WIDTH = 800
 DEFAULT_SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Minimap Example"
+SCREEN_TITLE = "Førstehjælp Mesterkursus"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -226,10 +226,6 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
-
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
         for character in self.square_list:
             if arcade.check_for_collision(self.player_sprite, character):
                 print("Touched")

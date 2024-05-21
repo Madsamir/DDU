@@ -47,8 +47,7 @@ class MyWindow(arcade.Window):
             self.printed_result = True
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-        print("Mouse pressed at:", x, y)  # Tilføjet til at kontrollere, om denne metode bliver kaldt
-
+        print("Mouse pressed at:", x, y)
         if self.puls_tjek and (
             (385 < x < 400 and 360 < y < 385) or
             (410 < x < 430 and 360 < y < 385) or
