@@ -124,10 +124,7 @@ class MyGame(arcade.Window):
         self.square_list.append(self.char)
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
-        arcade.set_background_color(arcade.color.AMAZON)
-
-        # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color.GRAY)
 
 
         # Construct the minimap
